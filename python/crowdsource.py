@@ -434,8 +434,8 @@ def compute_centroids(x, y, psflist, flux, im, resid, weight,
         for i in range(len(x)):
             psfs[j][i, :, :] = psfmod.central_stamp(psflist[j][i],
                                                     censize=centroidsize)
-    stampsz = psfs[0].shape[-1]
-    stampszo2 = (stampsz-1)/2
+    stampsz = int(psfs[0].shape[-1])
+    stampszo2 = int((stampsz-1)/2)
     dx = numpy.arange(stampsz, dtype='i4')-stampszo2
     dx = dx.reshape(-1, 1)
     dy = dx.copy().reshape(1, -1)
@@ -785,10 +785,10 @@ def fit_im(im, psf, weight=None, dq=None, psfderiv=True,
         model += fixedmodel
     stars = OrderedDict([('x', xa), ('y', ya), ('flux', flux)] +
                         [(f, stats[f]) for f in stats])
-    dtypenames = stars.keys()
+    dtypenames = list(stars.keys())
     dtypeformats = [stars[n].dtype for n in dtypenames]
     dtype = dict(names=dtypenames, formats=dtypeformats)
-    stars = numpy.fromiter(zip(*stars.itervalues()),
+    stars = numpy.fromiter(zip(*stars.values()),
                            dtype=dtype, count=len(stars['x']))
     res = (stars, model+sky, sky+msky, psf)
     return res

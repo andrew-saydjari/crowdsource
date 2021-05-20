@@ -146,7 +146,7 @@ def process_image(imfn, ivarfn, dqfn, outfn=None, clobber=False,
     count = 0
     fwhms = []
     for name in extnames:
-        if name is 'PRIMARY':
+        if name == 'PRIMARY':
             continue
         hdr = fits.getheader(imfn, extname=name)
         if 'FWHM' in hdr:
@@ -154,7 +154,7 @@ def process_image(imfn, ivarfn, dqfn, outfn=None, clobber=False,
     fwhms = numpy.array(fwhms)
     fwhms = fwhms[fwhms > 0]
     for name in extnames:
-        if name is 'PRIMARY':
+        if name == 'PRIMARY':
             continue
         if extnamesdone is not None and name in extnamesdone:
             print('Skipping %s, extension %s; already done.' % (imfn, name))
@@ -215,7 +215,7 @@ def process_image(imfn, ivarfn, dqfn, outfn=None, clobber=False,
         else:
             ra = numpy.zeros(0, dtype='f8')
             dec = numpy.zeros(0, dtype='f8')
-        from matplotlib.mlab import rec_append_fields
+        from numpy.lib.recfunctions import rec_append_fields
         decapsid = numpy.zeros(len(cat), dtype='i8')
         decapsid[:] = (prihdr['EXPNUM']*2**32*2**7 +
                        hdr['CCDNUM']*2**32 +

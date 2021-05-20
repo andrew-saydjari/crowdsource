@@ -34,8 +34,8 @@ def central_stamp(stamp, censize=19):
         return stamp
     elif stampsz > censize:
         trim = (stamp.shape[-1] - censize)/2
-        f = trim
-        l = stampsz - trim
+        f = int(trim)
+        l = int(stampsz - trim)
         return stamp[..., f:l, f:l]
     else:
         ret = numpy.zeros(stamp.shape[:-2]+(censize, censize), dtype='f4')
@@ -1060,7 +1060,7 @@ def fit_linear_static_wing(x, y, xcen, ycen, stamp, imstamp, modstamp,
     resid_cen = central_stamp(resid, censize=pixsz)
     isig_cen = central_stamp(isig, censize=pixsz)
     residfitdict = {}
-    nperpar = (order+1)*(order+2)/2
+    nperpar = int((order+1)*(order+2)/2)
     residguess = numpy.zeros(nperpar, dtype='f4')
 
     for i in range(pixsz):
