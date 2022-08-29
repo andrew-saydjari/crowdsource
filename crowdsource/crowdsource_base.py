@@ -1029,7 +1029,7 @@ def compute_iso_fit(impsfstack, psfstack, weightstack, apcor, psfderiv):
 
 
 def sky_model_basis(i, j, nskyx, nskyy, nx, ny):
-    import basisspline
+    import crowdsource.basisspline as basisspline
     if (nskyx < 3) or (nskyy < 3):
         raise ValueError('Invalid sky model.')
     expandx = (nskyx-1.)/(3-1)
