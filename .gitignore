@@ -1,3 +1,4 @@
 crowdsourcephoto.egg-info
 dist
 build
+*.pyc

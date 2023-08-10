@@ -260,7 +260,8 @@ def process_image(base, date, filtf, vers, outfn=None, overwrite=False,
                   maxiter=10, titer_thresh=2, pixsz=9, wcutoff=0.0,
                   nthreads=1,
                   inject = 0, injextnamelist = None, injectfrac = 0.1,
-                  modsaveonly=False, donefrommod=False,noModsave=False):
+                  modsaveonly=False, donefrommod=False,noModsave=False,
+                  renameDir=None):
     if profile:
         import cProfile
         import pstats
@@ -391,7 +392,7 @@ def process_image(base, date, filtf, vers, outfn=None, overwrite=False,
         import decam_inject
         imfnI, ivarfnI, dqfnI, injextnames = decam_inject.write_injFiles(imfn, ivarfn,
             dqfn, outfn, inject, injextnamelist, filt, pixsz, wcutoff, verbose, resume,
-            date, overwrite, injectfrac=injectfrac)
+            date, overwrite, injectfrac=injectfrac, renameDir=renameDir)
 
         bigdict['imfn'] = imfnI
         bigdict['ivarfn'] = ivarfnI
@@ -633,6 +634,8 @@ if __name__ == "__main__":
                         help='limit injection run to subset of ccds listed')
     parser.add_argument('--injectfrac', type=float,
                         default=0.1, help='fraction of sources to reinject')
+    parser.add_argument('--renameDir', type=str,
+                        default=None, help='set up injection directory location')
 
     args = parser.parse_args()
     process_image(args.base, args.date, args.filtf, args.vers,
@@ -651,4 +654,5 @@ if __name__ == "__main__":
                   nthreads=args.nthreads,
                   inject=args.inject, injextnamelist=args.injccdlist,
                   injectfrac=args.injectfrac,modsaveonly=args.modsaveonly,
-                  donefrommod=args.donefrommod,noModsave=args.noModsave)
+                  donefrommod=args.donefrommod,noModsave=args.noModsave,
+                  renameDir=args.renameDir)

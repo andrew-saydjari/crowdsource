@@ -9,7 +9,7 @@ from collections import OrderedDict
 import os
 
 def write_injFiles(imfn, ivarfn, dqfn, outfn, inject, injextnamelist, filt, pixsz,
-                   wcutoff, verbose, resume, date, overwrite, injectfrac=0.1,extadd=None):
+                   wcutoff, verbose, resume, date, overwrite, injectfrac=0.1,extadd=None,renameDir=None):
     # Updated the completed ccds
     hdulist = fits.open(outfn)
     extnamesdone = []
@@ -44,9 +44,9 @@ def write_injFiles(imfn, ivarfn, dqfn, outfn, inject, injextnamelist, filt, pixs
 
     # create files with injected sources in the decapsi directory
     ## this might need to be more robust if we port to a different cluster/user
-    imfnI = injectRename(imfn)
-    ivarfnI = injectRename(ivarfn)
-    dqfnI = injectRename(dqfn)
+    imfnI = injectRename(imfn,renameDir=renameDir)
+    ivarfnI = injectRename(ivarfn,renameDir=renameDir)
+    dqfnI = injectRename(dqfn,renameDir=renameDir)
 
     # intialize the injected images
     prihdr = fits.getheader(imfn, extname='PRIMARY')
@@ -89,7 +89,7 @@ def write_injFiles(imfn, ivarfn, dqfn, outfn, inject, injextnamelist, filt, pixs
     return imfnI, ivarfnI, dqfnI, injextnamesI
 
 #seed on date here too
-def scatter_stars(outfn, imfn, ivarfn, dqfn, key, filt, pixsz, wcutoff, verbose, rng, injectfrac=0.1, extadd=None):
+def scatter_stars(outfn, imfn, ivarfn, dqfn, key, filt, pixsz, wcutoff, verbose, rng, injectfrac=0.1, extadd=None,renameDir=None):
     keyadd = "I"
     if extadd is not None:
         keyadd+=("_"+str(extadd).zfill(3))
@@ -169,9 +169,9 @@ def scatter_stars(outfn, imfn, ivarfn, dqfn, key, filt, pixsz, wcutoff, verbose,
     # save our injections
     ## Eddie thinks we should compare compressing with the
     ## same or different seed
-    imfnI = injectRename(imfn)
-    ivarfnI = injectRename(ivarfn)
-    dqfnI = injectRename(dqfn)
+    imfnI = injectRename(imfn,renameDir=renameDir)
+    ivarfnI = injectRename(ivarfn,renameDir=renameDir)
+    dqfnI = injectRename(dqfn,renameDir=renameDir)
 
     with warnings.catch_warnings(record=True) as wlist:
         hdr = fits.getheader(dqfn, extname=key)
@@ -252,9 +252,10 @@ def load_psfmodel(outfn, key, filter, pixsz=9):
     psfmodel.fitfun = partial(psfmod.fit_linear_static_wing, filter=filter, pixsz=pixsz)
     return psfmodel
 
-
-def injectRename(fname):
-    spltname = fname.split("/")
-    spltname[-2] = "decapsi"
-    fname = "/".join(spltname)
+#DECaPS2 used renameDir="decapsi", hard coded
+def injectRename(fname,renameDir=None):
+    if renameDir is not None:
+        spltname = fname.split("/")
+        spltname[-2] = renameDir
+        fname = "/".join(spltname)
     return fname[:-7]+"I.fits.fz"
